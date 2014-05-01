@@ -126,6 +126,7 @@ int kvm_set_irq(struct kvm *kvm, int irq_source_id, u32 irq, int level,
 	 */
 	rcu_read_lock();
 	irq_rt = rcu_dereference(kvm->irq_routing);
+	/* Get all the routing entry from map[irq] into irq_set[] */
 	if (irq < irq_rt->nr_rt_entries)
 		hlist_for_each_entry(e, &irq_rt->map[irq], link)
 			irq_set[i++] = *e;
@@ -133,6 +134,9 @@ int kvm_set_irq(struct kvm *kvm, int irq_source_id, u32 irq, int level,
 
 	while(i--) {
 		int r;
+		/* Trigger corresponding routing entry's set function
+		 * which is registered when installing the interrupt route
+		 */
 		r = irq_set[i].set(&irq_set[i], kvm, irq_source_id, level,
 				   line_status);
 		if (r < 0)

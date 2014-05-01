@@ -1276,6 +1276,8 @@ __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn, bool atomic,
 			  writable);
 }
 
+/* @wirte_fault: error_code & PFERR_WRITE_MASK
+ */
 static pfn_t __gfn_to_pfn(struct kvm *kvm, gfn_t gfn, bool atomic, bool *async,
 			  bool write_fault, bool *writable)
 {
